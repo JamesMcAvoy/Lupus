@@ -1,11 +1,18 @@
 {
-    "name": "lordarryn/lupus",
-    "description": "creation de roles pour un loup-garou-like",
-    "type": "library",
+    "name": "lordarryn/lycanthrope",
+    "description": "creation d'un serveur pour un loup-garou-like",
+    "type": "project",
     "require-dev": {
         "phpunit/phpunit": "^7"
     },
     "license": "MIT",
     "minimum-stability": "alpha",
-    "require": {}
+    "require": {
+        "cboden/ratchet": "^0.4.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Lycanthrope\\": "src/"
+        }
+    }
 }
