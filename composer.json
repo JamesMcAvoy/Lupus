@@ -8,6 +8,7 @@
     "license": "MIT",
     "minimum-stability": "alpha",
     "require": {
+        "php": ">=7.0",
         "cboden/ratchet": "^0.4.1"
     },
     "autoload": {
