@@ -4,7 +4,7 @@ namespace Lycanthrope;
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 
-class Game implements MessageComponentInterface {
+class Main implements MessageComponentInterface {
     protected $clients;
 
     public function __construct() {

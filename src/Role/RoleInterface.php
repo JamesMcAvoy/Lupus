@@ -1,6 +1,6 @@
 <?php
 
-namespace Lycanthrope\Roles;
+namespace Lycanthrope\Role;
 
 interface RoleInterface {
 

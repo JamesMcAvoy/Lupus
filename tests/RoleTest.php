@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
+use Lycanthrope\Role\AbstractVillager;
 
 final class RoleTest extends TestCase {
 
@@ -9,7 +10,7 @@ final class RoleTest extends TestCase {
 
         $this->assertEquals(
             'Villageois',
-            (new class extends Lycanthrope\Roles\AbstractVillager {
+            (new class extends AbstractVillager {
 
             })->getName()
         );

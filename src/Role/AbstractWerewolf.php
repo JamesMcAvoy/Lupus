@@ -1,9 +1,9 @@
 <?php
 
-namespace Lycanthrope\Roles;
+namespace Lycanthrope\Role;
 
-use Lycanthrope\Roles\RoleInterface;
-use Lycanthrope\Roles\RoleTrait;
+use Lycanthrope\Role\RoleInterface;
+use Lycanthrope\Role\RoleTrait;
 
 abstract class AbstractWerewolf implements RoleInterface {
 

@@ -10,7 +10,7 @@
     "require": {
         "php": ">=7.0",
         "cboden/ratchet": "^0.4.1",
-        "propel/propel": "^2.0@alpha"
+        "illuminate/database": "^5.6"
     },
     "autoload": {
         "psr-4": {
