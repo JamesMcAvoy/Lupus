@@ -17,7 +17,6 @@ class Main implements MessageComponentInterface {
         $this->clients->attach($conn);
 
         echo "New connection! ({$conn->resourceId})\n";
-        echo $this->clients->count();
     }
 
     public function onMessage(ConnectionInterface $from, $msg) {
@@ -38,7 +37,6 @@ class Main implements MessageComponentInterface {
         $this->clients->detach($conn);
 
         echo "Connection {$conn->resourceId} has disconnected\n";
-        echo $this->clients->count();
     }
 
     public function onError(ConnectionInterface $conn, \Exception $e) {

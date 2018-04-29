@@ -19,8 +19,8 @@ try {
                 new LycanthropeGame()
             )
         ),
-        PORT_LISTEN,
-        ADDR_LISTEN
+        LYC_PORT_LISTEN,
+        LYC_ADDR_LISTEN
     );
 
     $server->run();

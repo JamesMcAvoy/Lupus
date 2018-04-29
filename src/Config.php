@@ -24,7 +24,7 @@ final class Config {
         self::dbInit();
 
         if(isset($argv['1']) && $argv['1'] == 'schema') {
-            self::schema(__DIR__ . '/../app/' . SCHEMA);
+            self::schema(__DIR__ . '/../app/' . LYC_SCHEMA);
         }
 
     }
@@ -50,7 +50,7 @@ final class Config {
         array_walk(
             $config,
             function($value, $key) {
-                define(strtoupper($key), $value);
+                define(strtoupper('lyc_'.$key), $value);
             }
         );
 
@@ -68,12 +68,12 @@ final class Config {
             $capsule = new Capsule;
 
             $capsule->addConnection([
-                'driver'    => DB_DRIVER,
-                'host'      => DB_HOST,
-                'port'      => DB_PORT,
-                'database'  => DB_NAME,
-                'username'  => DB_USER,
-                'password'  => DB_PASS,
+                'driver'    => LYC_DB_DRIVER,
+                'host'      => LYC_DB_HOST,
+                'port'      => LYC_DB_PORT,
+                'database'  => LYC_DB_NAME,
+                'username'  => LYC_DB_USER,
+                'password'  => LYC_DB_PASS,
                 'charset'   => 'utf8',
                 'collation' => 'utf8_unicode_ci',
                 'prefix'    => '',
