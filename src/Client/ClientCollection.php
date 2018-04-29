@@ -8,11 +8,6 @@ class ClientCollection implements \Countable, \Iterator, \ArrayAccess {
     /**
      * @var int
      */
-    protected $count;
-
-    /**
-     * @var int
-     */
     protected $pos;
 
     /**
@@ -26,7 +21,6 @@ class ClientCollection implements \Countable, \Iterator, \ArrayAccess {
      */
     public function __construct($connections = array()) {
 
-        $this->count = 0;
         $this->pos = 0;
         $this->clients = array();
 
@@ -39,14 +33,14 @@ class ClientCollection implements \Countable, \Iterator, \ArrayAccess {
     }
 
     /**
-     * Retourne si un client est contenu dans la collection
+     * Retourne si une connexion en tant que client est contenue dans la collection
      * @param Ratchet\ConnectionInterface
      * @return bool
      */
     public function contains(ConnectionInterface $connection): bool {
 
         foreach($this->clients as $client) {
-            if($connection === $client) {
+            if($this->make($connection) == $client) {
                 return true;
             }
         }
@@ -55,29 +49,27 @@ class ClientCollection implements \Countable, \Iterator, \ArrayAccess {
     }
 
     /**
-     * Attache un client
+     * Attache une connexion en tant que client
      * @param Ratchet\ConnectionInterface
      * @return void
      */
     public function attach(ConnectionInterface $connection) {
 
         if(!$this->contains($connection)) {
-            ++$this->count;
-            $this->clients[] = $connection;
+            $this->clients[] = $this->make($connection);
         }
 
     }
 
     /**
-     * Détache un client
+     * Détache une connexion en tant que client
      * @param Ratchet\ConnectionInterface
      * @return void
      */
     public function detach(ConnectionInterface $connection) {
 
         foreach($this->clients as $offset => $client) {
-            if($client === $connection) {
-                --$this->count;
+            if($client == $this->make($connection)) {
                 unset($this->clients[$offset]);
                 $this->rewind();
                 return;
@@ -87,10 +79,13 @@ class ClientCollection implements \Countable, \Iterator, \ArrayAccess {
     }
 
     /**
+     * Convertit un objet ConnectionInterface en un objet Client
      * @param Ratchet\ConnectionInterface
-     * @todo
+     * @return Lycanthrope\Client\Client
      */
-    private function interfaceToClient(ConnectionInterface $client) {
+    protected function make(ConnectionInterface $client) {
+
+        return new Client($client);
 
     }
 
@@ -98,7 +93,7 @@ class ClientCollection implements \Countable, \Iterator, \ArrayAccess {
      * @see \Countable
      */
     public function count() {
-        return $this->count;
+        return count($this->clients);
     }
 
     /**
