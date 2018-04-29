@@ -6,10 +6,22 @@
 </p>
 
 ---
-Cette bibliothèque écrite en PHP permet de créer facilement une application côté serveur inspirée du célèbre jeu de rôle. Elle met en place un serveur websocket.
+Ce framework écrit en PHP permet de créer facilement une application inspirée du célèbre jeu de rôle. Il met en place un serveur websocket et contient une bibliothèque JS pour gérer le client et les websockets.
 
-## Comment installer
+## Comment l'installer
 
-Simplement par un `composer create-project lordarryn/lycanthrope`
+Simplement par un `composer create-project lordarryn/lycanthrope {directory}`
 
-## Comment utiliser
+## Comment l'utiliser
+
+L'application se trouve dans le dossier `app/`, les sources dans le dossier `src/`, et un **exemple** de côté client  dans le dossier `public/` ainsi que la [bibliothèque Javascript](https://github.com/JamesMcAvoy/Lycanthrope/tree/master/public/js).
+
+Après avoir installé le projet, il faut modifier le fichier de configuration dans `app/`.
+
+`En construction`
+
+### Exécuter les tests
+
+```bash
+php vendor/bin/phpunit tests/
+```
