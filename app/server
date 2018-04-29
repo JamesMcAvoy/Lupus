@@ -19,7 +19,8 @@ try {
                 new LycanthropeGame()
             )
         ),
-        8080
+        PORT_LISTEN,
+        ADDR_LISTEN
     );
 
     $server->run();
