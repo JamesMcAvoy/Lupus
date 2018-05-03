@@ -20,36 +20,44 @@
         return (typeof attr !== 'undefined')
     }
 
+    // Méthode superglobale qui exécute les autres méthodes de l'objet
+    // Exécute Lycanthrope.connect()
+    //
+    //
+    var init = function(args = {}) {
+        this.connect(args)
+    }
+
     // Instancie une connexion avec le serveur WS
-    // Le token dans l'objet en paramètre est un token CSRF necessaire lors de l'initiation (connexion)
-    // pour securiser l'application et le client
-    // Il est possible de passer des paramètres additionnels via l'attribut params et la route
+    // Le token dans l'objet en paramètre est un token CSRF necessaire
+    // lors de la connexion pour securiser l'application et le client
+    // Il est possible de passer des paramètres additionnels via l'attribut routeArgs et la route
     // Il est aussi possible de modifier le protocole en WSS (secure)
     // Exemple :
     //
-    // lycanthrope.connect({
+    // Lycanthrope.connect({
     //      pseudo: 'user',
     //      token: 'token',
-    //      socket: '127.0.0.1:8080',
+    //      socket: '127.0.0.1:8888',
     //      route: '/?pseudo={0}&token={1}&room={2}',
-    //      params: ['id_room'],
+    //      routeArgs: ['id_room'],
     //      protocol: 'wss'
     // })
     var connect = function(args) {
         if(!isset(args.pseudo) || !isset(args.token)) {
             console.log('Erreur lors de la connexion : pseudo/token manquant')
+            return;
         }
 
-        socket   = isset(args.socket)   ? args.socket   : '127.0.0.1:8080'
+        socket   = isset(args.socket)   ? args.socket   : '127.0.0.1:8888'
         route    = isset(args.route)    ? args.route    : '/?pseudo={0}&token={1}'
         protocol = isset(args.protocol) ? args.protocol : 'ws'
 
-        // Si un paramètre params et la route n'est pas celle par defaut
-        // Dans ce cas la route avec les paramètres additionnels va être creee
         let routeArgs
-
-        if(isset(args.route) && isset(args.params)) {
-            routeArgs = [args.pseudo, args.token].concat(args.params)
+        // Si paramètre routeArgs existe et la route n'est pas celle par defaut
+        // Dans ce cas la route avec les paramètres additionnels va etre creee
+        if(isset(args.route) && isset(args.routeArgs)) {
+            routeArgs = [args.pseudo, args.token].concat(args.routeArgs)
         } else {
             routeArgs = [args.pseudo, args.token]
         }
@@ -71,7 +79,7 @@
         }
     }
 
-    // Méthodes socket asynchrones
+    // Méthodes this.socket asynchrones
 
     // On open connection
     //
@@ -108,11 +116,12 @@
         }))
     }
 
-    // Main Lycanthrope proto
+    // Main Lycanthrope object
     var main = {
         // this.socket
         // this.pseudo
         // this.token
+        init: init,
         connect: connect,
         send: send,
 
