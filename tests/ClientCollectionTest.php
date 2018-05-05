@@ -1,23 +1,10 @@
 <?php
 declare(strict_types=1);
 
+require_once 'ConnectionFactory.php';
+
 use PHPUnit\Framework\TestCase;
-use Ratchet\ConnectionInterface;
 use Lycanthrope\Client\ClientCollection;
-
-class ConnectionFactory implements ConnectionInterface {
-
-    public $data;
-
-    public function __construct($data = null) {
-        $this->data = $data;
-    }
-
-    public function send($data) {}
-
-    public function close() {}
-
-}
 
 final class ClientCollectionTest extends TestCase {
 
