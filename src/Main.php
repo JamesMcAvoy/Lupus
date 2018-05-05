@@ -1,21 +1,26 @@
 <?php
 namespace Lycanthrope;
 
+use Symfony\Component\Console\Output\OutputInterface;
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 use Lycanthrope\Client\ClientCollection;
 
+use Lycanthrope\Exception\ConfigurationException as ConfigException;
+
 class Main implements MessageComponentInterface {
+    protected $output;
+
     protected $clients;
 
-    public function __construct() {
+    public function __construct(OutputInterface $output) {
+        $this->output = $output;
         $this->clients = new ClientCollection;
     }
 
     public function onOpen(ConnectionInterface $conn) {
         // Store the new connection to send messages to later
         $this->clients->attach($conn);
-
         echo "New connection! ({$conn->resourceId})\n";
     }
 
@@ -25,7 +30,7 @@ class Main implements MessageComponentInterface {
             , $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
 
         foreach ($this->clients as $client) {
-            if ($from !== $client) {
+            if ($from !== $client->getConnection()) {
                 // The sender is not the receiver, send to each client connected
                 $client->send($msg);
             }

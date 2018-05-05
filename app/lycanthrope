@@ -1,0 +1,18 @@
+#!/usr/bin/env php
+<?php
+
+use Symfony\Component\Console\Application;
+use Lycanthrope\Config;
+use Lycanthrope\Command\RunServerCommand;
+use Lycanthrope\Command\RunSchemaCommand;
+
+require __DIR__ .'/../vendor/autoload.php';
+
+Config::boot();
+
+$cli = new Application;
+$cli->add(new RunServerCommand);
+$cli->add(new RunSchemaCommand);
+$cli->setDefaultCommand((new RunServerCommand)->getName());
+// La nuit tombe...
+$cli->run();

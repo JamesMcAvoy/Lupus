@@ -1,8 +1,9 @@
 <?php
 namespace Lycanthrope;
 
-use Lycanthrope\Exception\ConfigurationException as ConfigException;
 use Illuminate\Database\Capsule\Manager as Capsule;
+use Symfony\Component\Console\Output\OutputInterface;
+use Lycanthrope\Exception\ConfigurationException as ConfigException;
 
 final class Config {
 
@@ -18,19 +19,44 @@ final class Config {
      */
     public static function boot() {
 
-        global $argv;
-
         self::confInit();
         self::dbInit();
-
-        if(isset($argv['1']) && $argv['1'] == 'schema') {
-            self::schema(__DIR__ . '/../app/' . LYC_SCHEMA);
-        }
 
     }
 
     /**
-     * Initialise les contantes de configuration
+     * Exécute le schéma SQL en remettant à zéro la BDD
+     * @param Symfony\Component\Console\Output\OutputInterface
+     * @return void
+     * @throws Lycanthrope\Exception\ConfigurationException
+     */
+    public static function schema(OutputInterface $output) {
+
+        $file = __DIR__ . '/../app/' . LYC_SCHEMA;
+
+        if(!file_exists($file)) {
+            throw new ConfigException('Configuration file not found.');
+        }
+
+        try {
+            foreach(Capsule::select('SHOW TABLES') as $table) {
+                $table_array = get_object_vars($table);
+                Capsule::schema()->drop($table_array[key($table_array)]);
+            }
+
+            require_once $file;
+        } catch(\Exception $e) {
+            throw new ConfigException($e->getMessage());
+        } finally {
+            $output->writeln('The database has been reseted.');
+        }
+
+        $output->writeln('The schema has been executed.');
+
+    }
+
+    /**
+     * Initialise les constantes de configuration
      * @param void
      * @return void
      * @throws Lycanthrope\Exception\ConfigurationException
@@ -84,35 +110,6 @@ final class Config {
         } catch(\Exception $e) {
             throw new ConfigException($e->getMessage());
         }
-
-    }
-
-    /**
-     * Exécute le schéma SQL en remettant à zéro la BDD
-     * @param void
-     * @return void
-     * @throws Lycanthrope\Exception\ConfigurationException
-     */
-    private static function schema($schemaPath) {
-
-        if(!file_exists($schemaPath)) {
-            throw new ConfigException('Le fichier de schéma n\'existe pas.');
-        }
-
-        try {
-            foreach(Capsule::select('SHOW TABLES') as $table) {
-                $table_array = get_object_vars($table);
-                Capsule::schema()->drop($table_array[key($table_array)]);
-            }
-
-            require_once $schemaPath;
-        } catch(\Exception $e) {
-            throw new ConfigException($e->getMessage());
-        } finally {
-            echo 'La base de données a été remise à zéro.' . PHP_EOL;
-        }
-
-        echo 'Le schéma a bien été exécuté.' . PHP_EOL;
 
     }
 
