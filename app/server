@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
 
+use Symfony\Component\Console\Application;
 use Ratchet\Server\IoServer;
 use Ratchet\Http\HttpServer;
 use Ratchet\WebSocket\WsServer;
