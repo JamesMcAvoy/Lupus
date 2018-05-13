@@ -8,8 +8,6 @@ use Lycanthrope\Command\RunSchemaCommand;
 
 require __DIR__ .'/../vendor/autoload.php';
 
-Config::boot();
-
 $cli = new Application;
 $cli->add(new RunServerCommand);
 $cli->add(new RunSchemaCommand);

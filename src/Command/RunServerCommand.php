@@ -8,6 +8,7 @@ use Ratchet\Server\IoServer;
 use Ratchet\Http\HttpServer;
 use Ratchet\WebSocket\WsServer;
 use Lycanthrope\Exception\ExceptionInterface;
+use Lycanthrope\Config;
 use Lycanthrope\Main as LycanthropeGame;
 
 class RunServerCommand extends Command {
@@ -23,17 +24,20 @@ class RunServerCommand extends Command {
     public function execute(InputInterface $input, OutputInterface $output) {
 
         try {
+            Config::boot();
+
+            require_once dirname(__DIR__) . '/../game/' . LYC_MAIN;
+
             $server = IoServer::factory(
                 new HttpServer(
                     new WsServer(
-                        new LycanthropeGame($output)
+                        new \App($output)
                     )
                 ),
                 LYC_PORT_LISTEN,
                 LYC_ADDR_LISTEN
             );
 
-            $output->writeln(date('d/m H:i:s : ') . 'server running at <fg=green;options=underscore>ws://'.LYC_ADDR_LISTEN.':'.LYC_PORT_LISTEN.'</>');
             $server->run();
         } catch(ExceptionInterface $e) {
             $output->writeln([

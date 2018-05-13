@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 
-// Exemple
+// Example
 Capsule::schema()->create('users', function($table) {
     $table->increments('id');
     $table->string('pseudo');

@@ -9,12 +9,13 @@ use Lycanthrope\Client\ClientCollection;
 use Lycanthrope\Exception\ConfigurationException as ConfigException;
 
 class Main implements MessageComponentInterface {
-    protected $output;
+    protected $logger;
 
     protected $clients;
 
     public function __construct(OutputInterface $output) {
-        $this->output = $output;
+        $this->logger = new Logger($output);
+        $this->logger->start();
         $this->clients = new ClientCollection;
     }
 

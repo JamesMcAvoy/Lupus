@@ -30,6 +30,7 @@ class RunSchemaCommand extends Command {
         }
 
         try {
+            Config::boot();
             Config::schema($output);
         } catch(ExceptionInterface $e) {
             $output->writeln([

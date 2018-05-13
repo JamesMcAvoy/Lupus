@@ -8,9 +8,10 @@ use Lycanthrope\Exception\ConfigurationException as ConfigException;
 final class Config {
 
     /**
+     * Game components folder
      * @var String
      */
-    private static $file = __DIR__ . '/../app/configuration.ini';
+    private static $folder = __DIR__ . '/../game/';
 
     /**
      * Initialise les principaux composants de l'application
@@ -32,10 +33,10 @@ final class Config {
      */
     public static function schema(OutputInterface $output) {
 
-        $file = __DIR__ . '/../app/' . LYC_SCHEMA;
+        $schema = self::$folder . LYC_SCHEMA;
 
-        if(!file_exists($file)) {
-            throw new ConfigException('Configuration file not found.');
+        if(!file_exists($schema)) {
+            throw new ConfigException('Schema file not found.');
         }
 
         try {
@@ -44,7 +45,7 @@ final class Config {
                 Capsule::schema()->drop($table_array[key($table_array)]);
             }
 
-            require_once $file;
+            require_once $schema;
         } catch(\Exception $e) {
             throw new ConfigException($e->getMessage());
         } finally {
@@ -63,14 +64,14 @@ final class Config {
      */
     private static function confInit() {
 
-        if(!file_exists(self::$file)) {
-            throw new ConfigException('Le fichier de configuration n\'existe pas.');
+        if(!file_exists(self::$folder . 'configuration.ini')) {
+            throw new ConfigException('Configuration file not found.');
         }
 
-        $config = parse_ini_file(self::$file);
+        $config = parse_ini_file(self::$folder . 'configuration.ini');
 
         if(empty($config)) {
-            throw new ConfigException('Le fichier de configuration est vide.');
+            throw new ConfigException('Configuration file empty.');
         }
 
         array_walk(
