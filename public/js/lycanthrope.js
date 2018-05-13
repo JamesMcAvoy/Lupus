@@ -4,36 +4,62 @@
 
 ;((global, $) => {
 
-    // Version actuelle du script
+    // Script default parameters
+    // For example, the default input to send a message has the ID 'lt-send'
+    let ltParams = {
+        send: '#lyc-send'
+    }
+
     let version = 'alpha'
 
-    // Retourne un string formate
+    // Return a format str
     const printf = (string, args = []) => {
-        for(i in args) {
+        for(i in args)
             string = string.replace('{' + i + '}', args[i])
-        }
         return string
     }
 
-    // Retourne un booleen en fonction de l'existance de l'attribut
+    // Return a boolean
     const isset = (attr) => {
         return (typeof attr !== 'undefined')
     }
 
-    // Méthode superglobale qui exécute les autres méthodes de l'objet
-    // Exécute Lycanthrope.connect()
-    //
-    //
-    var init = function(args = {}) {
+    // Run Lycanthrope.dom()
+    // Run Lycanthrope.connect()
+    let init = function(args = {}) {
+        if(isset(args.dom))
+            this.dom(args.dom)
         this.connect(args)
     }
 
-    // Instancie une connexion avec le serveur WS
-    // Le token dans l'objet en paramètre est un token CSRF necessaire
-    // lors de la connexion pour securiser l'application et le client
-    // Il est possible de passer des paramètres additionnels via l'attribut routeArgs et la route
-    // Il est aussi possible de modifier le protocole en WSS (secure)
-    // Exemple :
+    // Set the default parameters from the inputs
+    // If the parameter does exist, then it is created
+    // Create the events related to the inputs
+    let dom = function(args) {
+        for(argument in args) {
+            if(isset(ltParams[argument]) && $(args[argument]).length > 0)
+                ltParams[argument] = args[argument]
+        }
+
+        let that = this
+        // Send a message from the chat input
+        $(ltParams.send).on('keypress', function(e) {
+            if(e.keyCode == 13) {
+                e.preventDefault()
+                $this = $(this)
+                if(that.socket && $this.val().length > 0) {
+                    that.send($this.val())
+                    $this.val('')
+                }
+            }
+        })
+    }
+
+    // Instantiate a connection with the WS server
+    // A CSRF token is needed
+    // Additionnal route parameters are possible with routeArgs
+    //
+    // Example :
     //
     // Lycanthrope.connect({
     //      pseudo: 'user',
@@ -43,10 +69,10 @@
     //      routeArgs: ['id_room'],
     //      protocol: 'wss'
     // })
-    var connect = function(args) {
+    let connect = function(args) {
         if(!isset(args.pseudo) || !isset(args.token)) {
             console.log('Erreur lors de la connexion : pseudo/token manquant')
-            return;
+            return
         }
 
         socket   = isset(args.socket)   ? args.socket   : '127.0.0.1:8888'
@@ -54,8 +80,8 @@
         protocol = isset(args.protocol) ? args.protocol : 'ws'
 
         let routeArgs
-        // Si paramètre routeArgs existe et la route n'est pas celle par defaut
-        // Dans ce cas la route avec les paramètres additionnels va etre creee
+        // If parameter routeArgs does exist and route isn't the default route
+        // Then a route with additionnal parameters is created
         if(isset(args.route) && isset(args.routeArgs)) {
             routeArgs = [args.pseudo, args.token].concat(args.routeArgs)
         } else {
@@ -66,22 +92,19 @@
 
         try {
             this.socket = new WebSocket(route)
-
             this.socket.onopen    = onOpen
             this.socket.onclose   = onClose
             this.socket.onmessage = onMessage
             this.socket.onerror   = onError
         } catch(e) {
             console.error(e, e.stack)
+            this.socket = false
         } finally {
             this.pseudo = args.pseudo
             this.token = args.token
         }
     }
 
-    // Méthodes this.socket asynchrones
-
-    // On open connection
     //
     let onOpen = function() {
 
@@ -94,7 +117,7 @@
 
     //
     let onMessage = function(msg) {
-        console.log(msg)
+        console.log(msg.data)
     }
 
     //
@@ -102,10 +125,10 @@
 
     }
 
-    // Envoi message
-    // Prend en paramètre le message et le type de message
-    // La méthode envoie un JSON parsé en string avec le pseudo et le token
-    var send = function(msg, type = 'MSG') {
+    // Message sending
+    // Parameters : message and message type
+    // Send a JSON stringified with pseudo and token
+    let send = function(msg, type = 'MSG') {
         this.socket.send(JSON.stringify({
             msg: msg,
             type: type,
@@ -117,18 +140,18 @@
     }
 
     // Main Lycanthrope object
-    var main = {
+    let main = {
         // this.socket
         // this.pseudo
         // this.token
         init: init,
+        dom: dom,
         connect: connect,
         send: send,
 
         v: version
     }
 
-    // Charge l'objet dans la page actuelle
     global.prototype.Lycanthrope = main
 
 })(Window, jQuery)
